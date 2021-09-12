@@ -127,10 +127,20 @@ int main() {
 		test[i].x = i;
 		test[i].y = i;
 	}
-
 	std::cout << test << std::endl;
+	std::cout << test.Length() << std::endl;
 
-	std::cout << test.Length();
+
+	Polyline test2(1);
+	for (size_t i = 0; i < 1; ++i)
+	{
+
+		test2[i].x = (double)i + 10;
+		test2[i].y = (double)i + 10;
+	}
+	
+	std::cout << test2 << std::endl;
+	std::cout << test2.Length() << std::endl;
 
 	return 0;
 }
