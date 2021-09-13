@@ -1,13 +1,15 @@
 #include <iostream>
 #include <math.h>
 
+struct Point
+{
+	double x;
+	double y;
+};
+
+
 class Polyline
 {
-	struct Point
-	{
-		double x;
-		double y;
-	};
 	Point* p;
 	size_t vertex;
 
@@ -21,11 +23,11 @@ public:
 		delete[] p;
 	}
 
-	Polyline(const Polyline& polyline) : p(new Point[vertex]), vertex(polyline.vertex)
+	Polyline(const Polyline& polyline) : p(new Point[polyline.vertex]), vertex(polyline.vertex)
 	{
-		for (size_t i = 0; i < vertex; ++i)
+		for (size_t i = 0; i < polyline.vertex; ++i)
 		{
-			p[i] = polyline.p[i]; //Исправить 
+			p[i] = polyline.p[i]; 
 		}
 	}
 
@@ -49,18 +51,49 @@ public:
 		return true;
 	}
 
-	Polyline& operator+ (const Polyline& polyline) noexcept
+	bool operator!= (const Polyline& rhs) const noexcept
+	{
+		if (vertex != rhs.vertex) return true;
+		for (size_t i = 0; i < vertex; ++i)
+		{
+			if ((p[i].x != rhs.p[i].x) || (p[i].y != rhs.p[i].y)) return true;
+		}
+		return false;
+	}
+
+	Polyline operator+ (const Polyline& polyline) noexcept
 	{
 		Polyline result(vertex + polyline.vertex);
 		for (size_t i = 0; i < vertex; ++i)
 		{
-			result[i] = p[i];
+			result.p[i] = p[i];
 		}
 		for (size_t i = 0; i < polyline.vertex; ++i)
 		{
-			result[vertex + i] = polyline.p[i];
+			result.p[vertex + i] = polyline.p[i];
 		}
 		return result;
+	}
+
+	Polyline& operator = (const Polyline& line)
+	{
+		if (this == (&line)) return *this;
+		if (p) delete[] p;
+		if (line.p)
+		{
+			p = new Point[line.vertex];
+			vertex = line.vertex;
+			for (size_t i = 0; i < line.vertex; ++i)
+			{
+				p[i] = line.p[i];
+			}
+		}
+		else
+		{
+			p = nullptr;
+			vertex = 0;
+		}
+		return *this;
 	}
 
 	Point operator[] (const size_t index) const
@@ -75,7 +108,7 @@ public:
 		return p[index];
 	}
 
-	void AddToEnd(Point& point)
+	void AddToEnd(const Point& point)
 	{
 		vertex += 1;
 		Point* tmp = new Point[vertex];
@@ -84,20 +117,20 @@ public:
 			tmp[i] = p[i];
 		}
 		tmp[vertex - 1] = point;
-		delete[] p;
+		if (p != nullptr) delete[] p;
 		p = tmp;
 	}
 
-	void AddToBegin(Point& point)
+	void AddToBegin(const Point& point)
 	{
 		vertex += 1;
 		Point* tmp = new Point[vertex];
 		tmp[0] = point;
 		for (size_t i = 1; i < vertex; ++i)
 		{
-			tmp[i] = p[i];
+			tmp[i] = p[i-1];
 		}
-		delete[] p;
+		if (p != nullptr) delete[] p;
 		p = tmp;
 	}
 
@@ -127,9 +160,22 @@ int main() {
 		test[i].x = i;
 		test[i].y = i;
 	}
+
+	Polyline test1(1);
+	test1 = test;
+	std::cout << test1 << std::endl;
+
 	std::cout << test << std::endl;
 	std::cout << test.Length() << std::endl;
-
+	try
+	{
+		//test[35];
+		std::cout << test[2].x << std::endl;
+	}
+	catch (const char* err)
+	{
+		std::cerr << err << std::endl;
+	}
 
 	Polyline test2(1);
 	for (size_t i = 0; i < 1; ++i)
@@ -141,6 +187,20 @@ int main() {
 	
 	std::cout << test2 << std::endl;
 	std::cout << test2.Length() << std::endl;
+
+	Polyline test3 = test + test2;
+
+	std::cout << (test2 == test3) << std::endl;
+	std::cout << (test2 != test3) << std::endl;
+
+	Point p;
+	p.x = 21;
+	p.y = 23;
+
+	test3.AddToBegin(p);
+	test3.AddToEnd(p);
+
+	std::cout << test3 << std::endl;
 
 	return 0;
 }
