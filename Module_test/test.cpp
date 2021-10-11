@@ -125,7 +125,7 @@ TEST(Polyline, OperatorIsEqual)
 	EXPECT_TRUE(p1 == p2);
 }
 
-TEST(Polyline, OperatorIsEqual_EXCEPTION)
+TEST(Polyline, OperatorIsNotEqual)
 {
 	Polyline p1(1);
 	Polyline p2(1);

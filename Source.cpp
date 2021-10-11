@@ -24,11 +24,11 @@ int Menu_1()
 
 int Menu_2()
 {
-	std::cout << "\nДобавить точку в начало кривой - 1\nДобавить точку в конец кривой - 2\nИзменить вершину по индексу - 3\nНазад - Esc" << std::endl;
+	std::cout << "\nДобавить точку в начало кривой - 1\nДобавить точку в конец кривой - 2\nИзменить вершину по индексу - 3\nРассчитать длину кривой - 4\nНазад - Esc" << std::endl;
 	while (true)
 	{
 		int key = GetKey();
-		if ((key == 49) || (key == 50) || (key == 51) || (key == 27)) return key;
+		if ((key == 49) || (key == 50) || (key == 51) || (key == 52) || (key == 27)) return key;
 	}
 }
 
@@ -98,6 +98,20 @@ int main() {
 						system("pause");
 					}
 				}
+				if (m2 == 52)
+				{
+					try
+					{
+						system("cls");
+						std::cout << "Длина кривой: " << line_1.Length() << std::endl;
+						system("pause");
+					}
+					catch (const char* err)
+					{
+						std::cout << err << std::endl;
+						system("pause");
+					}
+				}
 				if (m2 == 27) break;
 			}
 		}
@@ -152,6 +166,20 @@ int main() {
 						std::cin >> p.x >> p.y;
 						line_2[index].x = p.x;
 						line_2[index].y = p.y;
+					}
+					catch (const char* err)
+					{
+						std::cout << err << std::endl;
+						system("pause");
+					}
+				}
+				if (m2 == 52)
+				{
+					try
+					{
+						system("cls");
+						std::cout << "Длина кривой: " << line_2.Length() << std::endl;
+						system("pause");
 					}
 					catch (const char* err)
 					{
