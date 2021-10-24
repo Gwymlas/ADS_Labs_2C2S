@@ -1,21 +1,26 @@
+#include <complex>
 #include <iostream>
 #include "Polyline.h"
 
-Polyline::Polyline() : p(nullptr), vertex(0) { }
+template <class T>
+Polyline<T>::Polyline() : p(nullptr), vertex(0) { }
 
-Polyline::Polyline(int count_vertex)
+template <class T>
+Polyline<T>::Polyline(int count_vertex)
 {
 	if (count_vertex < 0) throw "Vertex count error";
 	vertex = (size_t)count_vertex;
-	p = new Point[count_vertex]();
+	p = new T[count_vertex]();
 }
 
-Polyline::~Polyline()
+template <class T>
+Polyline<T>::~Polyline()
 {
 	delete[] p;
 }
 
-Polyline::Polyline(const Polyline& polyline) : p(new Point[polyline.vertex]), vertex(polyline.vertex)
+template <class T>
+Polyline<T>::Polyline(const Polyline<T>& polyline) : p(new T[polyline.vertex]), vertex(polyline.vertex)
 {
 	for (size_t i = 0; i < polyline.vertex; ++i)
 	{
@@ -23,40 +28,56 @@ Polyline::Polyline(const Polyline& polyline) : p(new Point[polyline.vertex]), ve
 	}
 }
 
-double Polyline::Length() const 
+template <class T>
+auto Polyline<T>::Length() const
 {
-	if (p == nullptr) throw "Line is empty";
-	double lenght = 0;
-	for (size_t i = 0; i < vertex - 1; ++i)
+	if ((p == nullptr) || (vertex < 2)) throw "Polyline is empty";
+	auto lenght = p[0].Distance(p[1]);
+	for (size_t i = 1; i < vertex - 1; ++i)
 	{
-		lenght += sqrt(pow((p[i + 1].x - p[i].x), 2) + pow((p[i + 1].y - p[i].y), 2));
+		lenght += p[i].Distance(p[i + 1]);
 	}
 	return lenght;
 }
 
-bool Polyline::operator== (const Polyline& rhs) const noexcept
+template <>
+auto Polyline<std::complex<double>>::Length() const
+{
+	if ((p == nullptr) || (vertex < 2)) throw "Polyline is empty";
+	double lenght = 0;
+	for (size_t i = 0; i < vertex - 1; ++i)
+	{
+		lenght += std::abs((p[i + 1] - p[i])); //proverit'
+	}
+	return lenght;
+}
+
+template <class T>
+bool Polyline<T>::operator== (const Polyline<T>& rhs) const noexcept
 {
 	if (vertex != rhs.vertex) return false;
 	for (size_t i = 0; i < vertex; ++i)
 	{
-		if ((p[i].x != rhs.p[i].x) || (p[i].y != rhs.p[i].y)) return false;
+		if (!(p[i] == rhs.p[i])) return false;
 	}
 	return true;
 }
 
-bool Polyline::operator!= (const Polyline& rhs) const noexcept
+template <class T>
+bool Polyline<T>::operator!= (const Polyline<T>& rhs) const noexcept
 {
 	if (vertex != rhs.vertex) return true;
 	for (size_t i = 0; i < vertex; ++i)
 	{
-		if ((p[i].x != rhs.p[i].x) || (p[i].y != rhs.p[i].y)) return true;
+		if (!(p[i] == rhs.p[i])) return true;
 	}
 	return false;
 }
 
-Polyline Polyline::operator+ (const Polyline& polyline) noexcept
+template <class T>
+Polyline<T> Polyline<T>::operator+ (const Polyline<T>& polyline) noexcept
 {
-	Polyline result(vertex + polyline.vertex);
+	Polyline<T> result(vertex + polyline.vertex);
 	for (size_t i = 0; i < vertex; ++i)
 	{
 		result.p[i] = p[i];
@@ -68,13 +89,14 @@ Polyline Polyline::operator+ (const Polyline& polyline) noexcept
 	return result;
 }
 
-Polyline& Polyline::operator = (const Polyline& line) noexcept
+template <class T>
+Polyline<T>& Polyline<T>::operator = (const Polyline<T>& line) noexcept
 {
 	if (this == (&line)) return *this;
 	if (p) delete[] p;
 	if (line.p)
 	{
-		p = new Point[line.vertex];
+		p = new T[line.vertex];
 		vertex = line.vertex;
 		for (size_t i = 0; i < line.vertex; ++i)
 		{
@@ -89,26 +111,29 @@ Polyline& Polyline::operator = (const Polyline& line) noexcept
 	return *this;
 }
 
-Point Polyline::operator[] (const size_t index) const
+template <class T>
+T Polyline<T>::operator[] (const size_t index) const
 {
 	if (index >= vertex) throw "Invalid index";
 	return p[index];
 }
 
-Point& Polyline::operator[] (const size_t index)
+template <class T>
+T& Polyline<T>::operator[] (const size_t index)
 {
 	if (index >= vertex) throw "Invalid index";
 	return p[index];
 }
 
-void Polyline::AddToEnd(const Point& point)
+template <class T>
+void Polyline<T>::AddToEnd(const T& point)
 {
 	for (size_t i = 0; i < vertex; ++i)
 	{
-		if ((point.x == p[i].x) && (point.y == p[i].y)) throw "Adding an existing point";
+		if (p[i] == point) throw "Adding an existing point";
 	}
 	vertex += 1;
-	Point* tmp = new Point[vertex];
+	T* tmp = new T[vertex];
 	for (size_t i = 0; i < vertex - 1; ++i)
 	{
 		tmp[i] = p[i];
@@ -118,14 +143,15 @@ void Polyline::AddToEnd(const Point& point)
 	p = tmp;
 }
 
-void Polyline::AddToBegin(const Point& point)
+template <class T>
+void Polyline<T>::AddToBegin(const T& point)
 {
 	for (size_t i = 0; i < vertex; ++i)
 	{
-		if ((point.x == p[i].x) && (point.y == p[i].y)) throw "Adding an existing point";
+		if (p[i] == point) throw "Adding an existing point";
 	}
 	vertex += 1;
-	Point* tmp = new Point[vertex];
+	T* tmp = new T[vertex];
 	tmp[0] = point;
 	for (size_t i = 1; i < vertex; ++i)
 	{
@@ -135,7 +161,8 @@ void Polyline::AddToBegin(const Point& point)
 	p = tmp;
 }
 
-std::ostream& operator<< (std::ostream& out, const Polyline& polyline)
+template <class T>
+std::ostream& operator<< (std::ostream& out, const Polyline<T>& polyline)
 {
 	out << "Polyline(";
 	for (size_t i = 0; i < polyline.vertex; ++i)
