@@ -1,31 +1,59 @@
+#include <complex>
 #include "pch.h"
 #include "..\Polyline.h"
-#include "..\Polyline.cpp"
-//TEST(Polyline, Constructor) 
-//{
-//	Polyline p;
-//	EXPECT_THROW(p.Length(), const char*);
-//}
-//
-//TEST(Polyline, Constructor_Param) 
-//{
-//	EXPECT_THROW(Polyline p(-2), const char*);
-//}
-//
-//TEST(Polyline, ConstructorCopy) 
-//{
-//	Polyline p(2);
-//	p[0].x = 0;
-//	p[0].y = 2;
-//	p[1].x = 2;
-//	p[1].y = 4;
-//	Polyline copy(p);
-//	EXPECT_EQ(p[0].x, copy[0].x);
-//	EXPECT_EQ(p[0].y, copy[0].y);
-//	EXPECT_EQ(p[1].x, copy[1].x);
-//	EXPECT_EQ(p[1].y, copy[1].y);
-//}
-//
+
+TEST(Polyline, Constructor)
+{
+	Polyline<IntPoint2> p_1;
+	Polyline<DoublePoint3> p_2;
+	Polyline<std::complex<double>> p_3;
+	EXPECT_THROW(p_1.Length(), const char*);
+	EXPECT_THROW(p_2.Length(), const char*);
+	EXPECT_THROW(p_3.Length(), const char*);
+}
+
+TEST(Polyline, Constructor_Param) 
+{
+	EXPECT_THROW(Polyline<IntPoint2> p_1(-2), const char*);
+	EXPECT_THROW(Polyline<DoublePoint3> p_2(-10), const char*);
+	EXPECT_THROW(Polyline<std::complex<double>> p_3(-1), const char*);
+}
+
+TEST(Polyline, ConstructorCopy) 
+{
+	Polyline<IntPoint2> p_1(3);
+	Polyline<DoublePoint3> p_2(3);
+	Polyline<std::complex<double>> p_3(3);
+	for (size_t i = 0; i < 2; ++i)
+	{
+		p_1[i]._x = i;
+		p_1[i]._y = i;
+		p_2[i]._x = i;
+		p_2[i]._y = i;
+		p_2[i]._z = i;
+		p_3[i] = (i * i - 1,  i );
+	}
+	
+	Polyline<IntPoint2> copy_1(p_1);
+	Polyline<DoublePoint3> copy_2(p_2);
+	Polyline<std::complex<double>> copy_3(p_3);
+
+	EXPECT_EQ(p_1[0]._x, copy_1[0]._x);
+	EXPECT_EQ(p_1[0]._y, copy_1[0]._y);
+	EXPECT_EQ(p_1[1]._x, copy_1[1]._x);
+	EXPECT_EQ(p_1[1]._y, copy_1[1]._y);
+	EXPECT_EQ(p_2[0]._x, copy_2[0]._x);
+	EXPECT_EQ(p_2[0]._y, copy_2[0]._y);
+	EXPECT_EQ(p_2[0]._z, copy_2[0]._z);
+	EXPECT_EQ(p_2[1]._x, copy_2[1]._x);
+	EXPECT_EQ(p_2[1]._y, copy_2[1]._y);
+	EXPECT_EQ(p_2[1]._z, copy_2[1]._z);
+	EXPECT_EQ(p_3[0].real(), copy_3[0].real());
+	EXPECT_EQ(p_3[0].imag(), copy_3[0].imag());
+	EXPECT_EQ(p_3[1].real(), copy_3[1].real());
+	EXPECT_EQ(p_3[1].imag(), copy_3[1].imag());
+}
+
 //TEST(Polyline, Length) 
 //{
 //	Polyline p(2);

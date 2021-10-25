@@ -4,6 +4,7 @@
 #include <math.h>
 #include "Polyline.h"
 
+
 int GetKey()
 {
 	int key = _getch();
@@ -112,9 +113,8 @@ void PolylineOfPoints2()
 					try
 					{
 						system("cls");
-						auto length = line_1.Length();
-						std::cout << "Длина кривой: " << length << std::endl;
-						std::cout << "Тип возвращаемого значения: " << typeid(length).name() << std::endl;
+						std::cout << "Длина кривой: " << line_1.Length() << std::endl;
+						std::cout << "Тип возвращаемого значения: " << typeid(line_1.Length()).name() << std::endl;
 						system("pause");
 					}
 					catch (const char* err)
