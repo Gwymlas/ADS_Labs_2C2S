@@ -436,6 +436,206 @@ void PolylineOfPoints3()
 		if (m1 == 27) break;
 	}
 }
+
+void PolylineOfComplexPoints()
+{
+	Polyline<std::complex<double>> line_1, line_2;
+	while (true)
+	{
+		system("cls");
+		int m1 = Menu1();
+		if (m1 == 49)
+		{
+			while (true)
+			{
+				system("cls");
+				std::cout << line_1 << std::endl;
+				int m2 = Menu2();
+				if (m2 == 49)
+				{
+					double im = 0, re = 0;
+					std::cout << "Введите координаты точки (действительную и мнимую часть)" << std::endl;
+					std::cin >> re >> im;
+					std::complex<double> p(re, im);
+					try
+					{
+						line_1.AddToBegin(p);
+					}
+					catch (const char* err)
+					{
+						std::cout << err << std::endl;
+						system("pause");
+					}
+				}
+				if (m2 == 50)
+				{
+					double im = 0, re = 0;
+					std::cout << "Введите координаты точки (действительную и мнимую часть)" << std::endl;
+					std::cin >> re >> im;
+					std::complex<double> p(re, im);
+					try
+					{
+						line_1.AddToEnd(p);
+					}
+					catch (const char* err)
+					{
+						std::cout << err << std::endl;
+						system("pause");
+					}
+				}
+				if (m2 == 51)
+				{
+					int index = 0;
+					std::cout << "Введите индекс координаты" << std::endl;
+					std::cin >> index;
+					try
+					{
+						std::cout << line_1[index] << std::endl;
+						double im = 0, re = 0;
+						std::cout << "Введите необходимые координаты вершины" << std::endl;
+						std::cin >> re >> im;
+						std::complex<double> p(re, im);
+						line_1[index] = p;
+					}
+					catch (const char* err)
+					{
+						std::cout << err << std::endl;
+						system("pause");
+					}
+				}
+				if (m2 == 52)
+				{
+					try
+					{
+						system("cls");
+						std::cout << "Длина кривой: " << line_1.Length() << std::endl;
+						std::cout << "Тип возвращаемого значения: " << typeid(line_1.Length()).name() << std::endl;
+						system("pause");
+					}
+					catch (const char* err)
+					{
+						std::cout << err << std::endl;
+						system("pause");
+					}
+				}
+				if (m2 == 27) break;
+			}
+		}
+
+		if (m1 == 50)
+		{
+			while (true)
+			{
+				system("cls");
+				std::cout << line_2 << std::endl;
+				int m2 = Menu2();
+				if (m2 == 49)
+				{
+					double im = 0, re = 0;
+					std::cout << "Введите координаты точки (действительную и мнимую часть)" << std::endl;
+					std::cin >> re >> im;
+					std::complex<double> p(re, im);
+					try
+					{
+						line_2.AddToBegin(p);
+					}
+					catch (const char* err)
+					{
+						std::cout << err << std::endl;
+						system("pause");
+					}
+				}
+				if (m2 == 50)
+				{
+					double im = 0, re = 0;
+					std::cout << "Введите координаты точки (действительную и мнимую часть)" << std::endl;
+					std::cin >> re >> im;
+					std::complex<double> p(re, im);
+					try
+					{
+						line_2.AddToEnd(p);
+					}
+					catch (const char* err)
+					{
+						std::cout << err << std::endl;
+						system("pause");
+					}
+				}
+				if (m2 == 51)
+				{
+					int index = 0;
+					std::cout << "Введите индекс координаты" << std::endl;
+					std::cin >> index;
+					try
+					{
+						std::cout << line_2[index] << std::endl;
+						double im = 0, re = 0;
+						std::cout << "Введите необходимые координаты вершины" << std::endl;
+						std::cin >> re >> im;
+						std::complex<double> p(re, im);
+						line_2[index] = p;
+					}
+					catch (const char* err)
+					{
+						std::cout << err << std::endl;
+						system("pause");
+					}
+				}
+				if (m2 == 52)
+				{
+					try
+					{
+						system("cls");
+						std::cout << "Длина кривой: " << line_2.Length() << std::endl;
+						std::cout << "Тип возвращаемого значения: " << typeid(line_2.Length()).name() << std::endl;
+						system("pause");
+					}
+					catch (const char* err)
+					{
+						std::cout << err << std::endl;
+						system("pause");
+					}
+				}
+				if (m2 == 27) break;
+			}
+		}
+
+		if (m1 == 51)
+		{
+			system("cls");
+			std::cout << line_1 << std::endl;
+			std::cout << line_2 << std::endl;
+			system("pause");
+		}
+
+		if (m1 == 52)
+		{
+			system("cls");
+			if (line_1 == line_2) std::cout << "Верно" << std::endl;
+			else std::cout << "Неверно" << std::endl;
+			system("pause");
+		}
+
+		if (m1 == 53)
+		{
+			system("cls");
+			if (line_1 != line_2) std::cout << "Верно" << std::endl;
+			else std::cout << "Неверно" << std::endl;
+			system("pause");
+		}
+
+		if (m1 == 54)
+		{
+			system("cls");
+			Polyline<std::complex<double>> result = line_1 + line_2;
+			std::cout << result << std::endl;
+			system("pause");
+		}
+
+		if (m1 == 27) break;
+	}
+}
+
 int main()
 {
 	setlocale(LC_ALL, "Russian");
@@ -448,7 +648,7 @@ int main()
 
 		if (polyline_type == 50) PolylineOfPoints3();
 
-		if (polyline_type == 51) continue;
+		if (polyline_type == 51) PolylineOfComplexPoints();
 
 		if (polyline_type == 27) break;
 	}

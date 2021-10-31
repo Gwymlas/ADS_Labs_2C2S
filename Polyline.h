@@ -250,17 +250,3 @@ void Polyline<T>::AddToBegin(const T& point)
 	if (p != nullptr) delete[] p;
 	p = tmp;
 }
-
-//template <class T>
-//std::ostream& operator<< (std::ostream& out, const Polyline<T>& polyline) // ispravit'
-//{
-//	out << "Polyline(";
-//	for (size_t i = 0; i < polyline.vertex; ++i)
-//	{
-//		out << "vertex[" << i << "]: " << "(" << polyline.p[i].x << "," << polyline.p[i].y;
-//		if (i != polyline.vertex - 1) out << "); ";
-//		else out << ")";
-//	}
-//	out << ")";
-//	return out;
-//}
