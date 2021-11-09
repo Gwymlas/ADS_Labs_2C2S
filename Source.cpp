@@ -290,7 +290,7 @@ void PolylineOfPoints3()
 					std::cin >> index;
 					try
 					{
-						std::cout << "(" << line_1[index]._x << "," << line_1[index]._y << line_1[index]._z << ")" << std::endl;
+						std::cout << "(" << line_1[index]._x << "," << line_1[index]._y << "," << line_1[index]._z << ")" << std::endl;
 						DoublePoint3 p;
 						std::cout << "¬ведите необходимые координаты вершины" << std::endl;
 						std::cin >> p._x >> p._y >> p._z;
@@ -367,7 +367,7 @@ void PolylineOfPoints3()
 					std::cin >> index;
 					try
 					{
-						std::cout << "(" << line_2[index]._x << "," << line_2[index]._y << line_2[index]._z << ")" << std::endl;
+						std::cout << "(" << line_2[index]._x << "," << line_2[index]._y << "," << line_2[index]._z << ")" << std::endl;
 						DoublePoint3 p;
 						std::cout << "¬ведите необходимые координаты вершины" << std::endl;
 						std::cin >> p._x >> p._y >> p._z;

@@ -137,7 +137,7 @@ auto Polyline<std::complex<double>>::Length() const
 	double lenght = 0;
 	for (size_t i = 0; i < vertex - 1; ++i)
 	{
-		lenght += std::abs((p[i + 1] - p[i])); //proverit'
+		lenght += std::abs((p[i + 1] - p[i])); 
 	}
 	return lenght;
 }
