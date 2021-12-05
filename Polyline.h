@@ -1,11 +1,14 @@
 #pragma once
 #include <complex>
 #include <iostream>
+#include <vector>
 
 struct IntPoint2
 {
 	int _x;
 	int _y;
+
+    //IntPoint2& operator= (const IntPoint2& point) = default;
 
 	bool operator== (const IntPoint2& rhs) const noexcept
 	{
@@ -25,11 +28,20 @@ std::ostream& operator<< (std::ostream& out, const IntPoint2& point)
 	return out;
 }
 
+std::istream& operator>> (std::istream& in, IntPoint2& point)
+{
+   in >> point._x;
+   in >> point._y;
+   return in;
+}
+
 struct DoublePoint3
 {
 	double _x;
 	double _y;
 	double _z;
+
+    //DoublePoint3& operator= (const DoublePoint3& point) = default;
 
 	bool operator== (const DoublePoint3& rhs) const noexcept
 	{
@@ -49,28 +61,35 @@ std::ostream& operator<< (std::ostream& out, const DoublePoint3& point)
 	return out;
 }
 
+std::istream& operator>> (std::istream& in, DoublePoint3& point)
+{
+    in >> point._x;
+    in >> point._y;
+    in >> point._z;
+    return in;
+}
+
 
 template <class T>
 class Polyline
 {
-	T* p;
-	size_t vertex;
+	std::vector<T> v;
 
 public:
-	Polyline();
-	Polyline(int count_vertex);
-	~Polyline();
-	Polyline(const Polyline& polyline);
-	size_t Vertex() const noexcept;
+	Polyline() = default;
+    Polyline(const Polyline<T>& polyline) = default;
+    Polyline& operator = (const Polyline& line) = default;
+	size_t Vertex() const;
 	auto Length() const;
-	bool operator== (const Polyline& rhs) const noexcept;
-	bool operator!= (const Polyline& rhs) const noexcept;
-	Polyline operator+ (const Polyline& polyline) noexcept;
-	Polyline& operator = (const Polyline& line) noexcept;
+	bool operator== (const Polyline& rhs) const;
+	bool operator!= (const Polyline& rhs) const;
+	Polyline operator+ (const Polyline& polyline);
 	T operator[] (const size_t index) const;
 	T& operator[] (const size_t index);
-	void AddToEnd(const T& point);
-	void AddToBegin(const T& point);
+	void AddToEnd(T& point);
+	void AddToBegin(T& point);
+    auto begin();
+    auto end();
 };
 
 template <class T>
@@ -86,167 +105,103 @@ std::ostream& operator<< (std::ostream& out, const Polyline<T>& polyline)
 	return out;
 }
 
-template <class T>
-Polyline<T>::Polyline() : p(nullptr), vertex(0) { }
-
-template <class T>
-Polyline<T>::Polyline(int count_vertex)
-{
-	if (count_vertex < 0) throw "Vertex count error";
-	vertex = (size_t)count_vertex;
-	p = new T[count_vertex]();
-}
-
-template <class T>
-Polyline<T>::~Polyline()
-{
-	delete[] p;
-}
-
-template <class T>
-Polyline<T>::Polyline(const Polyline<T>& polyline) : p(new T[polyline.vertex]), vertex(polyline.vertex)
-{
-	for (size_t i = 0; i < polyline.vertex; ++i)
-	{
-		p[i] = polyline.p[i];
-	}
-}
-
 template<class T>
-size_t Polyline<T>::Vertex() const noexcept
+size_t Polyline<T>::Vertex() const
 {
-	return vertex;
+	return v.size();
 }
 
 template <class T>
 auto Polyline<T>::Length() const
 {
-	if ((p == nullptr) || (vertex < 2)) throw "Polyline is empty";
-	auto lenght = p[0].Distance(p[1]);
-	for (size_t i = 1; i < vertex - 1; ++i)
+	if ((v.empty()) || (v.size() < 2)) throw std::logic_error("Polyline is empty");
+	auto length = v[0].Distance(v[1]);
+	for (size_t i = 1; i < v.size() - 1; ++i)
 	{
-		lenght += p[i].Distance(p[i + 1]);
+		length += v[i].Distance(v[i + 1]);
 	}
-	return lenght;
+	return length;
 }
 
 template <>
 auto Polyline<std::complex<double>>::Length() const
 {
-	if ((p == nullptr) || (vertex < 2)) throw "Polyline is empty";
-	double lenght = 0;
-	for (size_t i = 0; i < vertex - 1; ++i)
+	if ((v.empty()) || (v.size() < 2)) throw std::logic_error("Polyline is empty");
+	double length = 0;
+	for (size_t i = 0; i < v.size() - 1; ++i)
 	{
-		lenght += std::abs((p[i + 1] - p[i])); 
+		length+= std::abs((v[i + 1] - v[i]));
 	}
-	return lenght;
+	return length;
 }
 
 template <class T>
-bool Polyline<T>::operator== (const Polyline<T>& rhs) const noexcept
+bool Polyline<T>::operator== (const Polyline<T>& rhs) const
 {
-	if (vertex != rhs.vertex) return false;
-	for (size_t i = 0; i < vertex; ++i)
+	if (v.size() != rhs.v.size()) return false;
+	for (size_t i = 0; i < v.size(); ++i)
 	{
-		if (!(p[i] == rhs.p[i])) return false;
+		if (v[i] == rhs[i]) return false;
 	}
 	return true;
 }
 
 template <class T>
-bool Polyline<T>::operator!= (const Polyline<T>& rhs) const noexcept
+bool Polyline<T>::operator!= (const Polyline<T>& rhs) const
 {
-	if (vertex != rhs.vertex) return true;
-	for (size_t i = 0; i < vertex; ++i)
+	if (v.size() != rhs.v.size()) return true;
+	for (size_t i = 0; i < v.size(); ++i)
 	{
-		if (!(p[i] == rhs.p[i])) return true;
+		if (v[i] != rhs.v[i]) return true;
 	}
 	return false;
 }
 
 template <class T>
-Polyline<T> Polyline<T>::operator+ (const Polyline<T>& polyline) noexcept
+Polyline<T> Polyline<T>::operator+ (const Polyline<T>& polyline)
 {
-	Polyline<T> result(vertex + polyline.vertex);
-	for (size_t i = 0; i < vertex; ++i)
+    if (v.empty()) return polyline;
+    if (!polyline.Vertex()) return *this;
+	Polyline<T> result(*this);
+	for (size_t i = 0; i < polyline.v.size(); ++i)
 	{
-		result.p[i] = p[i];
-	}
-	for (size_t i = 0; i < polyline.vertex; ++i)
-	{
-		result.p[vertex + i] = polyline.p[i];
+		result.v[v.size() + i] = polyline.v[i];
 	}
 	return result;
 }
 
 template <class T>
-Polyline<T>& Polyline<T>::operator = (const Polyline<T>& line) noexcept
-{
-	if (this == (&line)) return *this;
-	if (p) delete[] p;
-	if (line.p)
-	{
-		p = new T[line.vertex];
-		vertex = line.vertex;
-		for (size_t i = 0; i < line.vertex; ++i)
-		{
-			p[i] = line.p[i];
-		}
-	}
-	else
-	{
-		p = nullptr;
-		vertex = 0;
-	}
-	return *this;
-}
-
-template <class T>
 T Polyline<T>::operator[] (const size_t index) const
 {
-	if (index >= vertex) throw "Invalid index";
-	return p[index];
+	return v.at(index);
 }
 
 template <class T>
 T& Polyline<T>::operator[] (const size_t index)
 {
-	if (index >= vertex) throw "Invalid index";
-	return p[index];
+	return v.at(index);
 }
 
 template <class T>
-void Polyline<T>::AddToEnd(const T& point)
+void Polyline<T>::AddToEnd(T& point)
 {
-	for (size_t i = 0; i < vertex; ++i)
-	{
-		if (p[i] == point) throw "Adding an existing point";
-	}
-	vertex += 1;
-	T* tmp = new T[vertex];
-	for (size_t i = 0; i < vertex - 1; ++i)
-	{
-		tmp[i] = p[i];
-	}
-	tmp[vertex - 1] = point;
-	if (p != nullptr) delete[] p;
-	p = tmp;
+	v.push_back(point);
 }
 
 template <class T>
-void Polyline<T>::AddToBegin(const T& point)
+void Polyline<T>::AddToBegin(T& point)
 {
-	for (size_t i = 0; i < vertex; ++i)
-	{
-		if (p[i] == point) throw "Adding an existing point";
-	}
-	vertex += 1;
-	T* tmp = new T[vertex];
-	tmp[0] = point;
-	for (size_t i = 1; i < vertex; ++i)
-	{
-		tmp[i] = p[i - 1];
-	}
-	if (p != nullptr) delete[] p;
-	p = tmp;
+	v.insert(v.begin(), point);
+}
+
+template <class T>
+auto Polyline<T>::begin()
+{
+    return v.begin();
+}
+
+template <class T>
+auto Polyline<T>::end()
+{
+    return v.end();
 }
