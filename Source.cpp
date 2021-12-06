@@ -1,5 +1,4 @@
 #include <iostream>
-#include <locale.h>
 #include <math.h>
 #include "Polyline.h"
 
@@ -14,7 +13,6 @@ void CheckInputValue(T& value)
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "The input value is incorrect! " << std::endl;
-            system("pause");
         }
         else
         {
@@ -35,6 +33,7 @@ int Menu1()
     }
 }
 
+
 int Menu2()
 {
 	std::cout << "\nAdd point at the begin of polyline - 1\nAdd point at the end of polyline - 2\nEdit point by index - 3\nLength of polyline - 4\nExit - 0" << std::endl;
@@ -45,6 +44,7 @@ int Menu2()
         if (value == 1 || value == 2 || value == 3 || value == 4 || value == 0) return value;
     }
 }
+
 
 int MainMenu()
 {
@@ -58,41 +58,25 @@ int MainMenu()
 	}
 }
 
+
 template <class T>
-void EditPolyline(Polyline<T>& polyline, int option)
+void EditPolyline(Polyline<T>& polyline)
 {
     bool repeat = true;
     while(repeat)
     {
-        system("clear");
-        system("clear");
-        std::cout << polyline << std::endl;
+        std::cout << "\n" << polyline << std::endl;
         int m2 = Menu2();
         switch (m2) {
             case 1: {
                 T point;
                 std::cout << "Enter coordinates of the point: " << std::endl;
                 std::cin >> point;
-                /*if (option == 0) {
-                    std::cout << "x: ";
-                    std::cin >> x;
-                    std::cout << "y: ";
-                    std::cin >> y;
-
-                } else {
-                    std::cout << "x: ";
-                    std::cin >> point._x;
-                    std::cout << "\ny: ";
-                    std::cin >> point._y;
-                    std::cout << "\nz: ";
-                    std::cin >> point._z;
-                }*/
                 try {
                     polyline.AddToBegin(point);
                 }
-                catch (const char *err) {
-                    std::cout << err << std::endl;
-                    system("pause");
+                catch (std::exception& err) {
+                    std::cout << err.what() << std::endl;
                 }
                 break;
             }
@@ -101,25 +85,11 @@ void EditPolyline(Polyline<T>& polyline, int option)
                 T point;
                 std::cout << "Enter coordinates of the point:" << std::endl;
                 std::cin >> point;
-                /*if (option == 0) {
-                    std::cout << "x: ";
-                    std::cin >> point._x;
-                    std::cout << "y: ";
-                    std::cin >> point._y;
-                } else {
-                    std::cout << "x: ";
-                    std::cin >> point._x;
-                    std::cout << "\ny: ";
-                    std::cin >> point._y;
-                    std::cout << "\nz: ";
-                    std::cin >> point._z;
-                }*/
                 try {
                     polyline.AddToEnd(point);
                 }
                 catch (std::exception& err) {
                     std::cout << err.what() << std::endl;
-                    system("pause");
                 }
                 break;
             }
@@ -133,36 +103,19 @@ void EditPolyline(Polyline<T>& polyline, int option)
                     std::cout << "Enter coordinates of the point:" << std::endl;
                     std::cin >> point;
                     polyline[index] = point;
-                    /*if (option == 0) {
-                        std::cout << "x: ";
-                        std::cin >> polyline[index]._x;
-                        std::cout << "y: ";
-                        std::cin >> polyline[index]._y;
-                    } else {
-                        std::cout << "x: ";
-                        std::cin >> polyline[index]._x;
-                        std::cout << "\ny: ";
-                        std::cin >> polyline[index]._y;
-                        std::cout << "\nz: ";
-                        std::cin >> polyline[index]._z;
-                    }*/
                 }
                 catch (std:: exception& err) {
                     std::cout << err.what() << std::endl;
-                    system("pause");
                 }
                 break;
             }
             case 4: {
                 try {
-                    system("clear");
                     std::cout << "Length of polyline: " << polyline.Length() << std::endl;
                     std::cout << typeid(polyline.Length()).name() << std::endl;
-                    system("pause");
                 }
                 catch (std::exception& err) {
                     std::cout << err.what() << std::endl;
-                    system("pause");
                 }
                 break;
             }
@@ -178,17 +131,12 @@ void EditPolyline(Polyline<T>& polyline, int option)
 }
 
 
-
-//----------------------
-
-
 void EditPolyline(Polyline<std::complex<double>>& polyline)
 {
     bool repeat = true;
     while(repeat)
     {
-        system("clear");
-        std::cout << polyline << std::endl;
+        std::cout << "\n" << polyline << std::endl;
         int m2 = Menu2();
         switch (m2) {
             case 1: {
@@ -204,7 +152,6 @@ void EditPolyline(Polyline<std::complex<double>>& polyline)
                 }
                 catch (std::exception& err) {
                     std::cout << err.what() << std::endl;
-                    system("pause");
                 }
                 break;
             }
@@ -222,7 +169,6 @@ void EditPolyline(Polyline<std::complex<double>>& polyline)
                 }
                 catch (std::exception& err) {
                     std::cout << err.what() << std::endl;
-                    system("pause");
                 }
                 break;
             }
@@ -243,20 +189,16 @@ void EditPolyline(Polyline<std::complex<double>>& polyline)
                 }
                 catch (std::exception& err) {
                     std::cout << err.what() << std::endl;
-                    system("pause");
                 }
                 break;
             }
             case 4: {
                 try {
-                    system("clear");
                     std::cout << "Length of polyline: " << polyline.Length() << std::endl;
                     std::cout << typeid(polyline.Length()).name() << std::endl;
-                    system("pause");
                 }
                 catch (std::exception& err) {
                     std::cout << err.what() << std::endl;
-                    system("pause");
                 }
                 break;
             }
@@ -271,16 +213,12 @@ void EditPolyline(Polyline<std::complex<double>>& polyline)
     }
 }
 
-//--------------------
-
 
 int main()
 {
-	setlocale(LC_ALL, "Russian");
     bool end = false;
 	while (!end)
 	{
-		system("clear");
 		int option = MainMenu();
         switch(option)
         {
@@ -292,24 +230,22 @@ int main()
                     int m1 = Menu1();
                     switch (m1) {
                         case 1: {
-                            EditPolyline(polyline1, 0);
+                            EditPolyline(polyline1);
                             break;
                         }
                         case 2: {
-                            EditPolyline(polyline2, 0);
+                            EditPolyline(polyline2);
                             break;
                         }
                         case 3: {
                             Polyline<IntPoint2> res;
                             res = polyline1 + polyline2;
                             std::cout << res << std::endl;
-                            system("pause");
                             break;
                         }
                         case 4: {
-                            std::cout << polyline1 << std::endl;
-                            std::cout << polyline2 << std::endl;
-                            system("pause");
+                            std::cout << "First Polyline: " <<polyline1 << std::endl;
+                            std::cout << "Second Polyline: " << polyline2 << std::endl;
                             break;
                         }
                         case 5: {
@@ -325,6 +261,7 @@ int main()
                             break;
                     }
                 }
+                break;
             }
 
             case 2: {
@@ -335,24 +272,22 @@ int main()
                     int m1 = Menu1();
                     switch (m1) {
                         case 1: {
-                            EditPolyline(polyline1, 0);
+                            EditPolyline(polyline1);
                             break;
                         }
                         case 2: {
-                            EditPolyline(polyline2, 0);
+                            EditPolyline(polyline2);
                             break;
                         }
                         case 3: {
                             Polyline<DoublePoint3> res;
                             res = polyline1 + polyline2;
                             std::cout << res << std::endl;
-                            system("pause");
                             break;
                         }
                         case 4: {
-                            std::cout << polyline1 << std::endl;
-                            std::cout << polyline2 << std::endl;
-                            system("pause");
+                            std::cout << "First Polyline: " <<polyline1 << std::endl;
+                            std::cout << "Second Polyline: " <<polyline2 << std::endl;
                             break;
                         }
                         case 5: {
@@ -368,6 +303,7 @@ int main()
                             break;
                     }
                 }
+                break;
             }
 
             case 3: {
@@ -378,24 +314,22 @@ int main()
                     int m1 = Menu1();
                     switch (m1) {
                         case 1: {
-                            EditPolyline(polyline1, 0);
+                            EditPolyline(polyline1);
                             break;
                         }
                         case 2: {
-                            EditPolyline(polyline2, 0);
+                            EditPolyline(polyline2);
                             break;
                         }
                         case 3: {
                             Polyline<std::complex<double>> res;
                             res = polyline1 + polyline2;
                             std::cout << res << std::endl;
-                            system("pause");
                             break;
                         }
                         case 4: {
-                            std::cout << polyline1 << std::endl;
-                            std::cout << polyline2 << std::endl;
-                            system("pause");
+                            std::cout << "First Polyline: " << polyline1 << std::endl;
+                            std::cout << "Second Polyline: " << polyline2 << std::endl;
                             break;
                         }
                         case 5: {
@@ -411,6 +345,7 @@ int main()
                             break;
                     }
                 }
+                break;
             }
 
             case 0: {

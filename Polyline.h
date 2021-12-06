@@ -141,7 +141,7 @@ bool Polyline<T>::operator== (const Polyline<T>& rhs) const
 	if (v.size() != rhs.v.size()) return false;
 	for (size_t i = 0; i < v.size(); ++i)
 	{
-		if (v[i] == rhs[i]) return false;
+		if (!(v[i] == rhs[i])) return false;
 	}
 	return true;
 }
@@ -152,7 +152,7 @@ bool Polyline<T>::operator!= (const Polyline<T>& rhs) const
 	if (v.size() != rhs.v.size()) return true;
 	for (size_t i = 0; i < v.size(); ++i)
 	{
-		if (v[i] != rhs.v[i]) return true;
+		if (!(v[i] == rhs[i])) return true;
 	}
 	return false;
 }
@@ -163,6 +163,7 @@ Polyline<T> Polyline<T>::operator+ (const Polyline<T>& polyline)
     if (v.empty()) return polyline;
     if (!polyline.Vertex()) return *this;
 	Polyline<T> result(*this);
+    result.v.resize(Vertex() + polyline.Vertex());
 	for (size_t i = 0; i < polyline.v.size(); ++i)
 	{
 		result.v[v.size() + i] = polyline.v[i];
@@ -173,24 +174,34 @@ Polyline<T> Polyline<T>::operator+ (const Polyline<T>& polyline)
 template <class T>
 T Polyline<T>::operator[] (const size_t index) const
 {
+    if(index >= this->Vertex()) throw std::out_of_range("Invalid index");
 	return v.at(index);
 }
 
 template <class T>
 T& Polyline<T>::operator[] (const size_t index)
 {
+    if(index >= this->Vertex()) throw std::out_of_range("Invalid index");
 	return v.at(index);
 }
 
 template <class T>
 void Polyline<T>::AddToEnd(T& point)
 {
+    for (auto it: *this)
+    {
+        if (it == point) throw std::logic_error("Adding an existing point");
+    }
 	v.push_back(point);
 }
 
 template <class T>
 void Polyline<T>::AddToBegin(T& point)
 {
+    for (auto it: *this)
+    {
+        if (it == point) throw std::logic_error("Adding an existing point");
+    }
 	v.insert(v.begin(), point);
 }
 
