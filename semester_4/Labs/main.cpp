@@ -24,11 +24,48 @@ class MyMap {
         else return 0;
     }
 
-    uint8_t balance_factor(Node* p) {
-        return height(p->right) - height(p->left);
+    int balance_factor(Node* p) {
+        return height(p->left) - height(p->right);
     }
 
+    void setHeight(Node* p) {
+        uint8_t height_left = height(p->left);
+        uint8_t height_right = height(p->right);
+        p->height = (height_left > height_right?height_left:height_right) + 1;
+    }
 
+    Node* rotateLeft(Node* p) {
+        Node* q = p->right;
+        p->right = q->left;
+        q->left = p;
+        setHeight(p);
+        setHeight(q);
+        return q;
+    }
+
+    Node* rotateRight(Node* p) {
+        Node* q = p->left;
+        p->left = q->right;
+        q->right = p;
+        setHeight(p);
+        setHeight(q);
+        return q;
+    }
+
+    Node* balance(Node* p) {
+        setHeight(p);
+        if (balance_factor(p) == -2) {
+            if (balance_factor(p->right) == 1)
+                p->right = rotateRight(p->right);
+            return rotateLeft(p);
+        }
+        if(balance_factor(p) == 2) {
+            if (balance_factor(p->left) == -1)
+                p->left = rotateLeft(p->left);
+            return rotateRight(p);
+        }
+        return p;
+    }
 
     Node *insert(Node* tree, int key, const string &data, bool& flag) {
         if (tree == nullptr) {
@@ -41,7 +78,7 @@ class MyMap {
             tree->data = data;
             flag = false;
         }
-        return tree;
+        return balance(tree);
     }
 
     Node* find(Node *tree, int key) const {
@@ -63,7 +100,7 @@ class MyMap {
     Node *deleteMaxElem(Node *tree) {
         if (tree->right == nullptr) return tree->left;
         tree->right = deleteMaxElem(tree->right);
-        return tree;
+        return balance(tree);
     }
 
     Node *erase(Node *tree, int key, bool& flag) {
@@ -82,9 +119,9 @@ class MyMap {
             necessary_elem->left = deleteMaxElem(left);
             necessary_elem->right = right;
             flag = true;
-            return necessary_elem;
+            return balance(necessary_elem);
         }
-        return tree;
+        return balance(tree);
     }
 
     void printTree(Node* tree, size_t level = 0) const {
