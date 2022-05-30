@@ -13,12 +13,19 @@ int main() {
     g.add_vertex("Kirov");
     g.add_edge("Samara", "Piter", 10);
     g.add_edge("Samara", "Moscow", 6);
-    g.add_edge("Moscow", "Piter", 50);
+    g.add_edge("Moscow", "Piter", 2);
     g.add_edge("Samara", "Orenburg", 11);
     g.add_edge("Piter", "Orenburg", 22);
     g.add_edge("Piter", "Syzran", 224);
     g.add_edge("Piter", "TLT", 242);
     g.add_edge("Piter", "Kirov", 232);
+    auto result = g.bellman_ford_algorithm("Samara", "Kirov");
+    std::cout << "Кратчайший путь: " << std::endl;
+    for (auto elem: result.first) {
+        std::cout << elem << "->";
+    }
+    std::cout << result.second << std::endl;
+    std::cout << "------------------" << std::endl;
     g.print();
     std::cout << "------------------" << std::endl;
     g.BFS("Piter");

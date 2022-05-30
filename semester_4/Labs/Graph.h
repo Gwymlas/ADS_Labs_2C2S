@@ -99,9 +99,14 @@ public:
 
     void print() {
         for (size_t i = 0; i < table.size(); ++i) {
-            std::cout<<table[i]._data;
-            for (auto elem = table[i]._edges.begin(); elem != table[i]._edges.end(); ++elem) {
-                std::cout<<"---" << elem->_data << " " << elem->_dst;
+            std::cout << "information about the town: " << std::endl;
+            std::cout << "Name: " << table[i]._data << std::endl;
+            std::cout << "The roads from this town:" << std::endl;
+            if (table[i]._edges.begin() == table[i]._edges.end()) {
+                std::cout << "There are no roads" << std::endl;
+            }
+            for (auto elem: table[i]._edges) {
+                std::cout << "\t" << "Destination: " << elem._dst << "---" << "Length: " << elem._data << std::endl;
             }
             std::cout<<std::endl;
         }
@@ -111,7 +116,6 @@ public:
         if (get_id(from) == -1) throw std::exception();
         for(auto elem: table) {
             elem._colour = false;
-            //elem._prev = nullptr;
         }
         std::queue<Vertex> q;
         Vertex s = table[get_id(from)];
@@ -124,7 +128,6 @@ public:
                 Vertex& v = table[get_id(elem._dst)];
                 if (v._colour == false) {
                     v._colour = true;
-                    //v._prev = u._data;
                     q.push(v);
                 }
             }
@@ -133,21 +136,20 @@ public:
     }
 
     std::pair<std::list<TVertex>, double> bellman_ford_algorithm(const TVertex& src, const TVertex& dst) {
-//        std::map<TVertex, std::pair<double, TVertex>> distance;
-//        distance[src] = std::make_pair(0, src);
-//        for (auto elem: table) {
-//            if (src == elem._data) continue;
-//            distance[elem] = std::make_pair(std::numeric_limits<double>::max(), elem);
-//        }
+        int index_src = get_id(src);
+        int index_dst = get_id(dst);
+        if ((index_src == -1) || (index_dst == -1)) throw std::exception();
         std::vector<double> distance(table.size(), std::numeric_limits<double>::max());
-        distance[get_id(src)] = 0;
+        std::vector<int> prev(table.size(), -1);
+        distance[index_src] = 0;
 
         for (size_t i = 0; i + 1 < table.size(); ++i) {
             for(size_t j = 0; j < table.size(); ++j) {
                 for (auto elem: table[j]._edges) {
                     int id_dst = get_id(elem._dst);
-                    if (distance[id_dst] > distance[j] + static_cast<double>(elem)) {
-                        distance[id_dst] = distance[j] + static_cast<double>(elem);
+                    if (distance[id_dst] > distance[j] + static_cast<double>(elem._data)) {
+                        distance[id_dst] = distance[j] + static_cast<double>(elem._data);
+                        prev[id_dst] = static_cast<int>(j);
                     }
                 }
             }
@@ -156,10 +158,15 @@ public:
         for(size_t j = 0; j < table.size(); ++j) {
             for (auto elem: table[j]._edges) {
                 int id_dst = get_id(elem._dst);
-                if (distance[id_dst] > distance[j] + static_cast<double>(elem)) throw std::exception();
+                if (distance[id_dst] > distance[j] + static_cast<double>(elem._data)) throw std::exception();
             }
         }
-        
+
+        std::list<TVertex> path;
+        for (int i = index_dst; i != -1; i = prev[i]) {
+            path.push_front(table[i]._data);
+        }
+        return make_pair(path, distance[index_dst]);
     }
 
 };
